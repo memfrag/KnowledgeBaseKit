@@ -23,7 +23,7 @@ public struct ReciprocalRankFusion: Sendable {
         public var ranks: [RetrievalArm: Int]
     }
 
-    /// - Parameter lists: candidates per arm, already in that arm's preferred order.
+    /// `lists` holds candidates per arm, already in that arm's preferred order.
     public func fuse(_ lists: [RetrievalArm: [ChunkID]]) -> [Ranked] {
         var scores: [ChunkID: Double] = [:]
         var ranks: [ChunkID: [RetrievalArm: Int]] = [:]

@@ -102,7 +102,7 @@ public enum GraphRepository {
         )
     }
 
-    /// - Parameter source: when given, only mentions from that source are removed.
+    /// When `source` is given, only mentions from that source are removed.
     public static func deleteMentions(
         ofChunk chunkID: ChunkID,
         source: MentionSource? = nil,

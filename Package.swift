@@ -1,4 +1,5 @@
 // swift-tools-version: 6.2
+import Foundation
 import PackageDescription
 
 let package = Package(
@@ -69,3 +70,16 @@ let package = Package(
         ),
     ]
 )
+
+// The DocC plugin is added only when building documentation, because SwiftPM resolves a
+// dependency's plugin packages too — every consumer of KnowledgeBaseKit would otherwise
+// fetch it for no benefit. Set KBKIT_BUILD_DOCS to opt in; see .github/workflows/docs.yml.
+//
+// Note that resolving with this set writes swift-docc-plugin into Package.resolved. Restore
+// the file afterwards (`git restore Package.resolved`) so docs-only dependencies do not
+// leak into the committed lockfile.
+if ProcessInfo.processInfo.environment["KBKIT_BUILD_DOCS"] != nil {
+    package.dependencies.append(
+        .package(url: "https://github.com/swiftlang/swift-docc-plugin.git", exact: "1.5.0")
+    )
+}

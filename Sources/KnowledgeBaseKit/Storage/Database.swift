@@ -22,6 +22,7 @@ public final class KnowledgeDatabase: Sendable {
     private let writeLock: WriteLock?
 
     /// - Parameters:
+    ///   - url: where the SQLite file lives. Its parent directory is created if needed.
     ///   - allowsWriting: when false, no write lock is taken and the connection is opened
     ///     read-only. Readers are unlimited and concurrent; only indexing is exclusive.
     ///   - embeddingDimensions: the width of the vector tables. Passed here rather than

@@ -1,0 +1,70 @@
+name: Documentation
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Allow one deployment at a time, and let a newer push supersede an in-flight one
+# rather than queueing behind it.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    # macOS 26 arm64. The package requires macOS 26 and Swift 6.3, so the older
+    # images cannot build it.
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Show toolchain
+        run: swift --version
+
+      - name: Build documentation
+        # KBKIT_BUILD_DOCS adds swift-docc-plugin to the manifest. It is gated so that
+        # consumers of this package do not resolve a docs-only dependency.
+        env:
+          KBKIT_BUILD_DOCS: "1"
+        run: |
+          swift package --allow-writing-to-directory docs \
+            generate-documentation \
+            --target KnowledgeBaseKit \
+            --disable-indexing \
+            --transform-for-static-hosting \
+            --hosting-base-path KnowledgeBaseKit \
+            --output-path docs
+
+      - name: Redirect the site root to the documentation
+        # The static-hosting output serves the API docs under /documentation/…; without
+        # this, the Pages root is an empty shell.
+        run: |
+          cat > docs/index.html <<'HTML'
+          <!doctype html>
+          <meta charset="utf-8">
+          <title>KnowledgeBaseKit</title>
+          <meta http-equiv="refresh" content="0; url=./documentation/knowledgebasekit/">
+          <link rel="canonical" href="./documentation/knowledgebasekit/">
+          <p>Redirecting to <a href="./documentation/knowledgebasekit/">the KnowledgeBaseKit documentation</a>.</p>
+          HTML
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

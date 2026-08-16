@@ -50,8 +50,8 @@ public struct DocumentIngestor: Sendable {
         self.extractsGraph = extractsGraph
     }
 
-    /// - Parameter force: bypasses the unchanged-document fast path, for re-chunking after a
-    ///   chunker version change.
+    /// `force` bypasses the unchanged-document fast path, for re-chunking after a chunker
+    /// version change.
     public func ingest(
         source: String,
         relativePath: String,

@@ -27,9 +27,9 @@ public actor KnowledgeStore {
 
     /// Opens a store backed by Ollama.
     ///
-    /// - Parameter migrationHandler: called with the migration plan *before* any re-indexing
-    ///   work is queued, so a host can report or veto it. Returning false throws
-    ///   ``KnowledgeStoreError/versionMismatch(key:stored:running:)``.
+    /// `migrationHandler` is called with the migration plan *before* any re-indexing work
+    /// is queued, so a host can report or veto it. Returning false throws
+    /// ``KnowledgeStoreError/versionMismatch(key:stored:running:)``.
     public init(
         databaseURL: URL,
         configuration: KnowledgeStoreConfiguration = KnowledgeStoreConfiguration(),

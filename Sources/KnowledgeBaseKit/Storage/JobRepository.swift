@@ -107,9 +107,9 @@ public enum JobRepository {
 
     /// Records a failure, scheduling a retry or dead-lettering when attempts are exhausted.
     ///
-    /// - Parameter isTransient: a connection failure to Ollama is not the job's fault. It is
-    ///   rescheduled without consuming an attempt, so an offline laptop does not dead-letter
-    ///   the entire queue while the user is away.
+    /// `isTransient` marks a failure that is not the job's fault — a connection failure to
+    /// Ollama, say. It is rescheduled without consuming an attempt, so an offline laptop does
+    /// not dead-letter the entire queue while the user is away.
     public static func fail(
         _ job: Job,
         error: String,

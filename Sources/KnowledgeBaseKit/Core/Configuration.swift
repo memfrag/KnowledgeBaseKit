@@ -2,11 +2,11 @@ import Foundation
 
 /// Everything the store needs to know that is not in the database.
 ///
-/// Several fields participate in ``VersionKeys`` and therefore in migration: changing the
+/// Several fields participate in ``VersionKey`` and therefore in migration: changing the
 /// embedding model re-embeds, changing the chunker bounds re-chunks, and so on. Those are
 /// marked below.
 public struct KnowledgeStoreConfiguration: Sendable {
-    /// Directories scanned by ``KnowledgeStore/sync()`` and watched by ``CorpusWatcher``.
+    /// Directories scanned by ``KnowledgeStore/sync(force:)`` and watched by ``CorpusWatcher``.
     public var corpusRoots: [URL]
     /// gitignore-style patterns, applied on top of the built-in rules (dotfiles,
     /// dot-directories, and non-`.md` extensions are always skipped).

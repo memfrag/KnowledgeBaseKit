@@ -79,8 +79,9 @@ public struct EntityID: StableIdentifier {
 /// Identifies a relation by its full triple plus the chunk that supports it.
 ///
 /// Including the supporting chunk means the same claim asserted by three chunks is three
-/// rows. That is what lets ``GraphGarbageCollector`` delete a fact when its last supporting
-/// chunk disappears without erasing it while other chunks still assert it.
+/// rows. That is what lets ``GraphRepository/collectOrphanedEntities(in:)`` delete a fact
+/// when its last supporting chunk disappears, without erasing it while other chunks still
+/// assert it.
 public struct RelationID: StableIdentifier {
     public let rawValue: String
     public init(rawValue: String) { self.rawValue = rawValue }
