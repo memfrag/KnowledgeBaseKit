@@ -2,5 +2,7 @@
 .build/
 .swiftpm/
 *.xcodeproj
-Package.resolved
 .kb/
+
+# Package.resolved is deliberately tracked: swift-markdown is a branch
+# dependency, so nothing else pins the parser. See README.

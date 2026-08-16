@@ -166,3 +166,14 @@ Redistributing this repository redistributes that file, so keep its licence with
 Dependencies resolved by SwiftPM rather than vendored, for reference: GRDB.swift
 (MIT), swift-markdown (Apache-2.0), Yams (MIT), swift-argument-parser (Apache-2.0),
 and the MCP Swift SDK.
+
+`Package.resolved` is committed, which is not the usual choice for a library.
+swift-markdown publishes no semantic-version tags, so it is a **branch**
+dependency (`release/6.3`), and swift-cmark comes along on its `gfm` branch. A
+branch carries no version constraint, so without the resolved file every fresh
+clone would build against whatever the branch tip happened to be that day — and
+swift-markdown is the parser. A change there can move chunk boundaries, which
+feeds the chunker version key, which triggers re-indexing. Pinning it keeps an
+upstream commit from quietly re-chunking somebody's corpus.
+
+Run `swift package update` to move the pins deliberately.
