@@ -4,5 +4,5 @@
 *.xcodeproj
 .kb/
 
-# Package.resolved is deliberately tracked: swift-markdown is a branch
-# dependency, so nothing else pins the parser. See README.
+# Package.resolved is deliberately tracked: it pins immutable commit revisions
+# and the transitive graph, which the exact: version pins do not reach.

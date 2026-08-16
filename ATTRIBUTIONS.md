@@ -36,7 +36,7 @@ Declared in `Package.swift`, pinned in `Package.resolved`.
 | Component | Version | License | Copyright |
 | --- | --- | --- | --- |
 | [GRDB.swift](https://github.com/groue/GRDB.swift) | 7.11.1 | MIT | Copyright (C) 2015–2025 Gwendal Roué |
-| [swift-markdown](https://github.com/swiftlang/swift-markdown) | `release/6.3` @ `de3e245b6044` | Apache-2.0 (+ NOTICE) | Copyright (c) 2021 Apple Inc. and the Swift project authors |
+| [swift-markdown](https://github.com/swiftlang/swift-markdown) | 0.8.0 | Apache-2.0 (+ NOTICE) | Copyright (c) 2021 Apple Inc. and the Swift project authors |
 | [Yams](https://github.com/jpsim/Yams) | 6.2.2 | MIT | Copyright (c) 2016 JP Simard |
 | [swift-argument-parser](https://github.com/apple/swift-argument-parser) | 1.8.2 | Apache-2.0 | Apple Inc. and the Swift project authors |
 | [MCP Swift SDK](https://github.com/modelcontextprotocol/swift-sdk) | 0.12.1 | Apache-2.0, with MIT-licensed portions | The MCP project contributors |
@@ -60,7 +60,7 @@ Pulled in by the above and linked into any binary built from this package.
 
 | Component | Version | License | Pulled in by |
 | --- | --- | --- | --- |
-| [swift-cmark](https://github.com/swiftlang/swift-cmark) | `gfm` @ `7898f1b3e4be` | BSD-2-Clause, with MIT-licensed portions | swift-markdown |
+| [swift-cmark](https://github.com/swiftlang/swift-cmark) | 0.8.0 | BSD-2-Clause, with MIT-licensed portions | swift-markdown |
 | [swift-nio](https://github.com/apple/swift-nio) | 2.101.3 | Apache-2.0 (+ NOTICE) | MCP Swift SDK |
 | [swift-log](https://github.com/apple/swift-log) | 1.15.0 | Apache-2.0 (+ NOTICE) | MCP Swift SDK |
 | [swift-collections](https://github.com/apple/swift-collections) | 1.6.0 | Apache-2.0 | swift-nio |

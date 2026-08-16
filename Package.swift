@@ -14,11 +14,13 @@ let package = Package(
     // package can shift chunk boundaries, which feeds the chunker version key and triggers
     // re-indexing. Move these deliberately with `swift package update`.
     //
-    // swift-markdown publishes no semantic-version tags, so it can only be pinned by branch;
-    // Package.resolved is what fixes it to a revision.
+    // swift-markdown must be pinned to a *tagged version* rather than a release branch:
+    // SwiftPM refuses to resolve a package released at a stable version if it depends on a
+    // branch or revision, so a branch here would make this package unusable as a versioned
+    // dependency for anyone else.
     dependencies: [
         .package(url: "https://github.com/groue/GRDB.swift.git", exact: "7.11.1"),
-        .package(url: "https://github.com/swiftlang/swift-markdown.git", branch: "release/6.3"),
+        .package(url: "https://github.com/swiftlang/swift-markdown.git", exact: "0.8.0"),
         .package(url: "https://github.com/jpsim/Yams.git", exact: "6.2.2"),
         .package(url: "https://github.com/apple/swift-argument-parser.git", exact: "1.8.2"),
         .package(url: "https://github.com/modelcontextprotocol/swift-sdk.git", exact: "0.12.1"),
