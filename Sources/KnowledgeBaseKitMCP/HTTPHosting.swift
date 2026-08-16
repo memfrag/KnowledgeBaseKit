@@ -27,7 +27,7 @@ public actor MCPHTTPHost {
         store: KnowledgeStore,
         tools: MCPTools = .all,
         name: String = "knowledge-base",
-        version: String = "0.1.0"
+        version: String = "0.1.1"
     ) async throws {
         self.transport = StatefulHTTPServerTransport()
         self.server = KnowledgeBaseMCPServer(

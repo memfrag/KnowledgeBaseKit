@@ -23,7 +23,7 @@ public actor KnowledgeBaseMCPServer {
         store: KnowledgeStore,
         tools: MCPTools = .all,
         name: String = "knowledge-base",
-        version: String = "0.1.0"
+        version: String = "0.1.1"
     ) {
         self.store = store
         self.exposed = tools

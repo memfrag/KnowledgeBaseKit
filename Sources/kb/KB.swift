@@ -11,7 +11,7 @@ struct KB: AsyncParsableCommand {
             Write commands (index, sync, rebuild, compact) take an exclusive lock. \
             Read commands (search, answer, status) work even while another process is indexing.
             """,
-        version: "0.1.0",
+        version: "0.1.1",
         subcommands: [
             Index.self, Sync.self, Watch.self, Search.self, Answer.self,
             Status.self, Rebuild.self, Compact.self, Serve.self,
