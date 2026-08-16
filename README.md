@@ -154,13 +154,7 @@ exercisable — and so you can test your own integration without a model running
 KnowledgeBaseKit is released under the [Zero-Clause BSD](LICENSE) licence (0BSD):
 use it for anything, no attribution required.
 
-Third-party code is catalogued in **[ATTRIBUTIONS.md](ATTRIBUTIONS.md)** —
-vendored source, direct and transitive dependencies, their licences and
-copyright holders, and the NOTICE files Apache-2.0 requires be carried forward.
-If you distribute a built binary of `kb` or an app linking this package, ship
-that file with it.
-
-One exception below is not mine to relicense. `Sources/CSQLiteVec/sqlite-vec.c`
+One exception, which is not mine to relicense. `Sources/CSQLiteVec/sqlite-vec.c`
 and `sqlite-vec.h` are vendored from [sqlite-vec](https://github.com/asg017/sqlite-vec)
 (v0.1.9, Copyright 2024 Alex Garcia) and remain under **Apache-2.0** — see
 [`Sources/CSQLiteVec/LICENSE-sqlite-vec.txt`](Sources/CSQLiteVec/LICENSE-sqlite-vec.txt).
@@ -174,37 +168,10 @@ Dependencies resolved by SwiftPM rather than vendored, for reference:
 - swift-argument-parser (Apache-2.0)
 - MCP Swift SDK
 
+See `ATTRIBUTIONS.md` for more information.
+
 Dependencies are pinned deliberately, in two layers, primarily as supply-chain
-hardening.
-
-`Package.swift` uses `exact:` rather than `from:`. A `from:` range authorizes
-SwiftPM to pull any later minor or patch release automatically, so a compromised
-upstream publish enters the build with no review and no diff. `exact:` means
-every version bump is a commit somebody has to make on purpose.
-
-`Package.resolved` is committed as well, and for security it is the stronger of
-the two. `exact:` resolves a *tag*, and a git tag is mutable — an attacker who
-can force-push a tag can change what `7.11.1` points at. `Package.resolved`
-records the commit **revision**, which is not forgeable that way. It also pins
-the transitive graph (swift-nio, swift-collections, and friends), which direct
-pins do not reach at all, and its `originHash` detects tampering with the
-dependency declarations themselves.
-
-Two limits:
-
-- **Downstream consumers are not protected.** SwiftPM ignores a dependency's
-  `Package.resolved`, so a package that depends on KnowledgeBaseKit resolves the
-  transitive graph itself. These pins secure builds *of this repository*.
-- **The branch dependency is the soft spot.** swift-markdown publishes no
-  semantic-version tags, so it can only be depended on by branch
-  (`release/6.3`), and swift-cmark follows on `gfm`. A branch tip moves whenever
-  upstream pushes. Only the revision in `Package.resolved` fixes those.
-
-The vendored sqlite-vec is in the strongest position of anything here: the
-source is in-tree and verified byte-identical to the upstream v0.1.9
-amalgamation, so there is no fetch to intercept.
-
-The cost of `exact:` is resolver rigidity — a downstream package needing a
-different GRDB fails to resolve rather than negotiating a compatible version.
-That is the intended trade. Run `swift package update` to move the pins
-deliberately, and review the diff when you do.
+hardening: `exact:` versions in `Package.swift` so no upstream release enters a
+build without review, and a committed `Package.resolved` that fixes immutable
+commit revisions and reaches the transitive graph. See
+[ATTRIBUTIONS.md](ATTRIBUTIONS.md#dependency-pinning).
