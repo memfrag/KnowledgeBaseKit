@@ -2,13 +2,10 @@
 
 A Swift package for macOS that builds and maintains a local knowledge base from
 Markdown files. Markdown is the source of truth, SQLite is the only datastore,
-and Ollama does all the AI work — nothing leaves the machine.
+and Ollama does all the AI work. Nothing leaves the machine.
 
 Retrieval is hybrid: FTS5 keyword search, sqlite-vec semantic search, and a
 knowledge graph extracted from the notes, fused by Reciprocal Rank Fusion.
-
-See [`Docs/LocalKnowledgeBaseSpecification.md`](Docs/LocalKnowledgeBaseSpecification.md)
-for the design and the reasoning behind it.
 
 ## Requirements
 
@@ -77,27 +74,27 @@ ingestion file by file.
 
 ## How it behaves
 
-**Ingestion is incremental.** Chunk IDs derive from `document + heading path +
+- **Ingestion is incremental.** Chunk IDs derive from `document + heading path +
 occurrence`, not from content, so editing a section's prose keeps its identity and
 re-embeds only that chunk. On a real vault, adding one section to an indexed
 document costs ~2s against ~2min for the initial index.
 
-**Renames are free.** `sync()` pairs a vanished path with a new path of identical
+- **Renames are free.** `sync()` pairs a vanished path with a new path of identical
 content and rewrites one column. Chunks, embeddings, and the graph all survive,
 and nothing is queued.
 
-**The store is queryable before the models catch up.** Chunks and the keyword
+- **The store is queryable before the models catch up.** Chunks and the keyword
 index are written synchronously; embedding and extraction run on a durable job
 queue behind them.
 
-**Ollama being offline is not a failure.** Ingestion still completes, jobs stay
+- **Ollama being offline is not a failure.** Ingestion still completes, jobs stay
 queued and retry, and `search()` degrades to keyword-only while saying so in its
 result. `answer()` does throw — generation without a model has no fallback.
 
-**The graph mirrors the corpus.** Entities and relations are reference-counted:
+- **The graph mirrors the corpus.** Entities and relations are reference-counted:
 when the last chunk supporting a fact is deleted, the fact goes with it.
 
-**One writer, many readers.** WAL plus an advisory lock: a second *writer* is
+- **One writer, many readers.** WAL plus an advisory lock: a second *writer* is
 refused and told who holds the lock, while readers are unlimited. This is what
 lets the MCP server answer while the app indexes.
 
@@ -157,15 +154,25 @@ exercisable — and so you can test your own integration without a model running
 KnowledgeBaseKit is released under the [Zero-Clause BSD](LICENSE) licence (0BSD):
 use it for anything, no attribution required.
 
-One exception, which is not mine to relicense. `Sources/CSQLiteVec/sqlite-vec.c`
+Third-party code is catalogued in **[ATTRIBUTIONS.md](ATTRIBUTIONS.md)** —
+vendored source, direct and transitive dependencies, their licences and
+copyright holders, and the NOTICE files Apache-2.0 requires be carried forward.
+If you distribute a built binary of `kb` or an app linking this package, ship
+that file with it.
+
+One exception below is not mine to relicense. `Sources/CSQLiteVec/sqlite-vec.c`
 and `sqlite-vec.h` are vendored from [sqlite-vec](https://github.com/asg017/sqlite-vec)
 (v0.1.9, Copyright 2024 Alex Garcia) and remain under **Apache-2.0** — see
 [`Sources/CSQLiteVec/LICENSE-sqlite-vec.txt`](Sources/CSQLiteVec/LICENSE-sqlite-vec.txt).
 Redistributing this repository redistributes that file, so keep its licence with it.
 
-Dependencies resolved by SwiftPM rather than vendored, for reference: GRDB.swift
-(MIT), swift-markdown (Apache-2.0), Yams (MIT), swift-argument-parser (Apache-2.0),
-and the MCP Swift SDK.
+Dependencies resolved by SwiftPM rather than vendored, for reference:
+
+- GRDB.swift (MIT)
+- swift-markdown (Apache-2.0)
+- Yams (MIT)
+- swift-argument-parser (Apache-2.0)
+- MCP Swift SDK
 
 Dependencies are pinned deliberately, in two layers, primarily as supply-chain
 hardening.
@@ -183,7 +190,7 @@ the transitive graph (swift-nio, swift-collections, and friends), which direct
 pins do not reach at all, and its `originHash` detects tampering with the
 dependency declarations themselves.
 
-Two limits worth being honest about:
+Two limits:
 
 - **Downstream consumers are not protected.** SwiftPM ignores a dependency's
   `Package.resolved`, so a package that depends on KnowledgeBaseKit resolves the
