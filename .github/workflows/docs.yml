@@ -36,6 +36,8 @@ jobs:
           swift package --allow-writing-to-directory docs \
             generate-documentation \
             --target KnowledgeBaseKit \
+            --target KnowledgeBaseKitMCP \
+            --enable-experimental-combined-documentation \
             --disable-indexing \
             --transform-for-static-hosting \
             --hosting-base-path KnowledgeBaseKit \
@@ -43,15 +45,17 @@ jobs:
 
       - name: Redirect the site root to the documentation
         # The static-hosting output serves the API docs under /documentation/…; without
-        # this, the Pages root is an empty shell.
+        # this, the Pages root is an empty shell. With combined documentation that path
+        # is a landing page listing both modules, so the redirect targets it rather than
+        # jumping into one of them.
         run: |
           cat > docs/index.html <<'HTML'
           <!doctype html>
           <meta charset="utf-8">
           <title>KnowledgeBaseKit</title>
-          <meta http-equiv="refresh" content="0; url=./documentation/knowledgebasekit/">
-          <link rel="canonical" href="./documentation/knowledgebasekit/">
-          <p>Redirecting to <a href="./documentation/knowledgebasekit/">the KnowledgeBaseKit documentation</a>.</p>
+          <meta http-equiv="refresh" content="0; url=./documentation/">
+          <link rel="canonical" href="./documentation/">
+          <p>Redirecting to <a href="./documentation/">the KnowledgeBaseKit documentation</a>.</p>
           HTML
 
       - uses: actions/configure-pages@v6

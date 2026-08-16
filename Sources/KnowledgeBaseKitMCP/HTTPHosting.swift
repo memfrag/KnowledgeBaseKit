@@ -6,11 +6,11 @@ import MCP
 ///
 /// `StatefulHTTPServerTransport` is framework-agnostic: it does not own a socket. The host
 /// app brings its own HTTP server — whatever it already uses — and forwards each request
-/// here, converting the returned ``MCP/HTTPResponse`` to its framework's own response type.
+/// here, converting the returned `HTTPResponse` to its framework's own response type.
 ///
 /// This is the deployment the concurrency model is designed around. The app holds the
 /// database write lock; a separate server *process* could not take it. Running in-process,
-/// the server shares the app's ``KnowledgeStore`` and needs no lock of its own, so agents can
+/// the server shares the app's `KnowledgeStore` and needs no lock of its own, so agents can
 /// query while the app indexes.
 ///
 /// ```swift
