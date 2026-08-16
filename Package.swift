@@ -9,12 +9,19 @@ let package = Package(
         .library(name: "KnowledgeBaseKitMCP", targets: ["KnowledgeBaseKitMCP"]),
         .executable(name: "kb", targets: ["kb"]),
     ],
+    // Exact pins rather than `from:` ranges. Determinism is worth more here than resolver
+    // flexibility: swift-markdown is the parser, and a dependency moving underneath the
+    // package can shift chunk boundaries, which feeds the chunker version key and triggers
+    // re-indexing. Move these deliberately with `swift package update`.
+    //
+    // swift-markdown publishes no semantic-version tags, so it can only be pinned by branch;
+    // Package.resolved is what fixes it to a revision.
     dependencies: [
-        .package(url: "https://github.com/groue/GRDB.swift.git", from: "7.11.0"),
+        .package(url: "https://github.com/groue/GRDB.swift.git", exact: "7.11.1"),
         .package(url: "https://github.com/swiftlang/swift-markdown.git", branch: "release/6.3"),
-        .package(url: "https://github.com/jpsim/Yams.git", from: "6.2.0"),
-        .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.8.0"),
-        .package(url: "https://github.com/modelcontextprotocol/swift-sdk.git", from: "0.12.0"),
+        .package(url: "https://github.com/jpsim/Yams.git", exact: "6.2.2"),
+        .package(url: "https://github.com/apple/swift-argument-parser.git", exact: "1.8.2"),
+        .package(url: "https://github.com/modelcontextprotocol/swift-sdk.git", exact: "0.12.1"),
     ],
     targets: [
         // sqlite-vec, compiled directly into the package. See Storage/Database.swift

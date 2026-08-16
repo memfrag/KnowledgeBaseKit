@@ -167,13 +167,23 @@ Dependencies resolved by SwiftPM rather than vendored, for reference: GRDB.swift
 (MIT), swift-markdown (Apache-2.0), Yams (MIT), swift-argument-parser (Apache-2.0),
 and the MCP Swift SDK.
 
-`Package.resolved` is committed, which is not the usual choice for a library.
-swift-markdown publishes no semantic-version tags, so it is a **branch**
-dependency (`release/6.3`), and swift-cmark comes along on its `gfm` branch. A
-branch carries no version constraint, so without the resolved file every fresh
-clone would build against whatever the branch tip happened to be that day — and
-swift-markdown is the parser. A change there can move chunk boundaries, which
-feeds the chunker version key, which triggers re-indexing. Pinning it keeps an
-upstream commit from quietly re-chunking somebody's corpus.
+Dependencies are pinned deliberately, in two layers.
 
-Run `swift package update` to move the pins deliberately.
+`Package.swift` uses `exact:` rather than `from:` version ranges. That is
+stricter than a library normally wants — `exact:` is SwiftPM's most restrictive
+constraint, so a downstream package that needs a different GRDB will fail to
+resolve rather than negotiate a compatible version. The trade is accepted here
+because a dependency shifting underneath the package is not a cosmetic risk:
+swift-markdown is the parser, and a parser change can move chunk boundaries,
+which feeds the chunker version key, which triggers a re-index of the corpus.
+
+`Package.resolved` is committed too, which covers what `exact:` cannot.
+swift-markdown publishes no semantic-version tags, so it can only be depended on
+by **branch** (`release/6.3`), and swift-cmark follows on its `gfm` branch. A
+branch carries no version constraint at all, so the resolved file is the only
+thing fixing those to a revision. It also pins the transitive graph (swift-nio,
+swift-collections, and friends), which direct pins do not reach.
+
+Note that SwiftPM ignores a dependency's `Package.resolved`, so this protects
+builds *of* this repository. Run `swift package update` to move the pins
+deliberately.
