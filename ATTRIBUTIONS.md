@@ -132,43 +132,6 @@ Linked against but not redistributed by this project.
 
 ---
 
-## Dependency pinning
-
-Pinning here is supply-chain hardening, not just reproducibility, and it works in
-two layers that cover different attacks.
-
-**`Package.swift` uses `exact:` rather than `from:`.** A `from:` range is standing
-authorization for SwiftPM to pull any later minor or patch release, so a
-compromised upstream publish enters the build with no review and no diff.
-`exact:` makes every version bump a commit somebody makes on purpose.
-
-**`Package.resolved` is committed**, and for security it is the stronger of the
-two. `exact:` resolves a *tag*, and git tags are mutable — someone able to
-force-push a tag changes what `7.11.1` points at, and `exact:` follows them
-there. `Package.resolved` records the commit **revision**, which is not forgeable
-that way. It also pins the transitive graph, which direct pins do not constrain
-at all, and its `originHash` detects tampering with the dependency declarations.
-
-Two limits worth stating plainly:
-
-- **Downstream consumers are not covered.** SwiftPM ignores a dependency's
-  `Package.resolved`, so a package depending on KnowledgeBaseKit resolves the
-  transitive graph itself. These pins secure builds *of this repository*.
-- **swift-markdown is the soft spot.** It publishes no semantic-version tags, so
-  it can only be depended on by branch (`release/6.3`), with swift-cmark
-  following on `gfm`. A branch tip moves whenever upstream pushes; only the
-  revision in `Package.resolved` fixes it.
-
-The vendored sqlite-vec is the strongest position of anything here: the source is
-in-tree and verified byte-identical to the upstream v0.1.9 amalgamation, so there
-is no fetch to intercept.
-
-The cost is resolver rigidity — a downstream package needing a different GRDB
-fails to resolve rather than negotiating a compatible version. That is the
-intended trade.
-
----
-
 ## Keeping this current
 
 This file is maintained by hand and describes the pins in `Package.resolved`. If

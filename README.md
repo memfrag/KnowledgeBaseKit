@@ -173,5 +173,4 @@ See `ATTRIBUTIONS.md` for more information.
 Dependencies are pinned deliberately, in two layers, primarily as supply-chain
 hardening: `exact:` versions in `Package.swift` so no upstream release enters a
 build without review, and a committed `Package.resolved` that fixes immutable
-commit revisions and reaches the transitive graph. See
-[ATTRIBUTIONS.md](ATTRIBUTIONS.md#dependency-pinning).
+commit revisions and reaches the transitive graph.
