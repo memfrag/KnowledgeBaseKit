@@ -167,23 +167,37 @@ Dependencies resolved by SwiftPM rather than vendored, for reference: GRDB.swift
 (MIT), swift-markdown (Apache-2.0), Yams (MIT), swift-argument-parser (Apache-2.0),
 and the MCP Swift SDK.
 
-Dependencies are pinned deliberately, in two layers.
+Dependencies are pinned deliberately, in two layers, primarily as supply-chain
+hardening.
 
-`Package.swift` uses `exact:` rather than `from:` version ranges. That is
-stricter than a library normally wants — `exact:` is SwiftPM's most restrictive
-constraint, so a downstream package that needs a different GRDB will fail to
-resolve rather than negotiate a compatible version. The trade is accepted here
-because a dependency shifting underneath the package is not a cosmetic risk:
-swift-markdown is the parser, and a parser change can move chunk boundaries,
-which feeds the chunker version key, which triggers a re-index of the corpus.
+`Package.swift` uses `exact:` rather than `from:`. A `from:` range authorizes
+SwiftPM to pull any later minor or patch release automatically, so a compromised
+upstream publish enters the build with no review and no diff. `exact:` means
+every version bump is a commit somebody has to make on purpose.
 
-`Package.resolved` is committed too, which covers what `exact:` cannot.
-swift-markdown publishes no semantic-version tags, so it can only be depended on
-by **branch** (`release/6.3`), and swift-cmark follows on its `gfm` branch. A
-branch carries no version constraint at all, so the resolved file is the only
-thing fixing those to a revision. It also pins the transitive graph (swift-nio,
-swift-collections, and friends), which direct pins do not reach.
+`Package.resolved` is committed as well, and for security it is the stronger of
+the two. `exact:` resolves a *tag*, and a git tag is mutable — an attacker who
+can force-push a tag can change what `7.11.1` points at. `Package.resolved`
+records the commit **revision**, which is not forgeable that way. It also pins
+the transitive graph (swift-nio, swift-collections, and friends), which direct
+pins do not reach at all, and its `originHash` detects tampering with the
+dependency declarations themselves.
 
-Note that SwiftPM ignores a dependency's `Package.resolved`, so this protects
-builds *of* this repository. Run `swift package update` to move the pins
-deliberately.
+Two limits worth being honest about:
+
+- **Downstream consumers are not protected.** SwiftPM ignores a dependency's
+  `Package.resolved`, so a package that depends on KnowledgeBaseKit resolves the
+  transitive graph itself. These pins secure builds *of this repository*.
+- **The branch dependency is the soft spot.** swift-markdown publishes no
+  semantic-version tags, so it can only be depended on by branch
+  (`release/6.3`), and swift-cmark follows on `gfm`. A branch tip moves whenever
+  upstream pushes. Only the revision in `Package.resolved` fixes those.
+
+The vendored sqlite-vec is in the strongest position of anything here: the
+source is in-tree and verified byte-identical to the upstream v0.1.9
+amalgamation, so there is no fetch to intercept.
+
+The cost of `exact:` is resolver rigidity — a downstream package needing a
+different GRDB fails to resolve rather than negotiating a compatible version.
+That is the intended trade. Run `swift package update` to move the pins
+deliberately, and review the diff when you do.
